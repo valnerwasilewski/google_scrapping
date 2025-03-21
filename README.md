@@ -53,7 +53,7 @@ And of course, logging and proper error handling.
    Use ```python3``` in macOS and Linux enviroments.
 
 3. Keep the browser window opened in foreground to allow the automation run smoothly.
-3. Arguments/Queries:
+4. Arguments/Queries:
     The arguments via command lind are **required** in order to allow the script run.
 
     You can send it as a single work, e.g.: `japan`, `spain`, `multilogin`. 
@@ -62,7 +62,7 @@ And of course, logging and proper error handling.
 
     To facilitate, you can also use quotaion marks for single-work queries.
 
-4. The script will:
+5. The script will:
    - Retrieve a proxy string with Multilogin Proxy, using proxy configurations in `config.json`.
    - Start a quick browser profile with Multilogin API.
    - Navigate to Google
@@ -70,7 +70,7 @@ And of course, logging and proper error handling.
    - Collect all results titles and urls.
    - Record information collected in a CSV file.
 
-5. Upon completion:
+6. Upon completion:
    - The file will be stored in the script's folder. It will also record the date and time, alongside the query provided.
    - Logs are stored in /logs/main.log, however, it's possible to follow it on console during the script execution.
 
