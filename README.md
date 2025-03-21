@@ -44,14 +44,15 @@ And of course, logging and proper error handling.
   
 
 ## How to Use
-1. Run the script:
+1. Connect Multilogin Agent.
+2. Run the script:
 
    ```bash
    python google_scrapping.py query1 "query2 with spaces" query3 query 4 "query5 with spaces"
    ```
    Use ```python3``` in macOS and Linux enviroments.
 
-2. Arguments/Queries:
+3. Arguments/Queries:
     The arguments via command lind are **required** in order to allow the script run.
 
     You can send it as a single work, e.g.: `japan`, `spain`, `multilogin`. 
@@ -60,7 +61,7 @@ And of course, logging and proper error handling.
 
     To facilitate, you can also use quotaion marks for single-work queries.
 
-3. The script will:
+4. The script will:
    - Retrieve a proxy string with Multilogin Proxy, using proxy configurations in `config.json`.
    - Start a quick browser profile with Multilogin API.
    - Navigate to Google
@@ -68,7 +69,7 @@ And of course, logging and proper error handling.
    - Collect all results titles and urls.
    - Record information collected in a CSV file.
 
-4. Upon completion:
+5. Upon completion:
    - The file will be stored in the script's folder. It will also record the date and time, alongside the query provided.
    - Logs are stored in /logs/main.log, however, it's possible to follow it on console during the script execution.
 
