@@ -53,6 +53,7 @@ And of course, logging and proper error handling.
    Use ```python3``` in macOS and Linux enviroments.
 
 3. Keep the browser window opened in foreground to allow the automation run smoothly.
+   
 4. Arguments/Queries:
     The arguments via command lind are **required** in order to allow the script run.
 
