@@ -710,7 +710,7 @@ def main(args_list, start_index=0):
 
     sleep(1)
     query_word = "query" if len(args_list) == 1 else "queries"
-    logging.info(f"The search on Google for {len(args_list)} q{query_word} has been finished. Please, check the CSV file.")
+    logging.info(f"The search on Google for {len(args_list)} {query_word} has been finished. Please, check the CSV file.")
     
 
 
