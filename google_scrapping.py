@@ -20,8 +20,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-
-
 load_dotenv()
 
 ##### GLOBAL VARIABLES
@@ -82,7 +80,7 @@ tz_formatter = TimezoneFormatter(
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True) # Creates 'logs' folder if it doesn't exist.
 
-log_file = os.path.join(log_dir, "main.log") # It creates the log file "main.og"
+log_file = os.path.join(log_dir, "google_scrapping.log") # It creates the log file "google_scrapping.log"
 logger = logging.getLogger()
 
 logger.setLevel(logging.INFO) # Define INFO or above as information to show. If we need to check some payload that are under debug, we can change it to "DEBUG" and check all debugging info.
