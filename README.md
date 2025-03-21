@@ -11,7 +11,7 @@ Requirements:
 - After performing the search, extract for each result.
   - Result title
   - URL
-  - 
+  
 Output: Save the results in a CSV file with appropriate headers.
 
 And of course, logging and proper error handling.
