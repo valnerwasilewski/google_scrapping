@@ -8,10 +8,9 @@ Requirements:
 - The search query can be hard-coded in your script, or accepted as a command-line argument. 
 - User should be able to provide multple queries. 
 - The script should work with both Mimic and SF (no need for mobile this time).
-- After performing the search, extract for each result.
-  - Result title
-  - URL
-  
+- After performing the search, extract for each result:
+-- Result title
+-- URL
 Output: Save the results in a CSV file with appropriate headers.
 
 And of course, logging and proper error handling.
@@ -45,6 +44,7 @@ And of course, logging and proper error handling.
 
 ## How to Use
 1. Connect Multilogin Agent.
+
 2. Run the script:
 
    ```bash
@@ -102,6 +102,6 @@ Here you can have a quick overview about this project's functions.
 Some ideas showed up while I was doing this task:
 
 1. A simple UI to assist the user to pass queries, and retrieve the CSV file. More user friendly.
-2. Fecth proxy traffic available, ensuring there is enough data to run profiles.
+2. Split the main script in modules, to keep the main script clean and more readable.
 3. Implement a captcha solver using paid tools, or;
-4. As I'm doing an undergraduate in Data Science, it could possible to train an LLM to quick reconize the Google's captcha challenge and solve it. The pro: it wil be really good to solve Google's captcha challenge. The cons: It may not be reusable for other use cases with differnt captcha puzzles, since it will be really good only in this captcha challnge.
+4. As I'm doing an undergraduate in Data Science, it could possible to train an LLM to quick reconize the Google's captcha challenge and solve it. The pro: it wil be really good to solve Google's captcha challenge. The cons: It may not be reusable for other use cases with differnt captcha puzzles, since it will be really good only in this captcha challenge.
