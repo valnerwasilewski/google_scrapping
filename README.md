@@ -8,9 +8,10 @@ Requirements:
 - The search query can be hard-coded in your script, or accepted as a command-line argument. 
 - User should be able to provide multple queries. 
 - The script should work with both Mimic and SF (no need for mobile this time).
-- After performing the search, extract for each result:
--- Result title
--- URL
+- After performing the search, extract for each result.
+  - Result title
+  - URL
+  - 
 Output: Save the results in a CSV file with appropriate headers.
 
 And of course, logging and proper error handling.
