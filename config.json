@@ -1,0 +1,13 @@
+{
+    "PROXY": {
+        "COUNTRY": "US",
+        "REGION": "",
+        "CITY": "",
+        "PROTOCOL": "http",
+        "SESSION_TYPE": "sticky"
+        },
+
+    "BROWSER_TYPE": "stealthfox",
+    "OPERATIONAL_SYSTEM": "windows"
+
+}
