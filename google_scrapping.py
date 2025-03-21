@@ -518,7 +518,7 @@ def find_elements(driver):
     titles = []
     urls = []
 
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 15)
 
     try:
         search_results = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[jsname="UWckNb"]'))) 
@@ -538,7 +538,7 @@ def find_elements(driver):
                 logging.error(f"An error has occured while processing a result: {e}")
 
     except Exception as e:
-        logging.error(f"An error happened while locating elements: {e}")
+        logging.error(f"An error happened while locating elements: {repr(e)}", exc_info=True)
 
     return titles, urls
 
@@ -551,7 +551,7 @@ def human_typing(element, query):
         args: string
     """
 
-    logging.info(f"Starting to type: {query}...")
+    logging.info(f"Typing: {query}...")
     sleep(1) #just to ensure it will a delay of 1 sec before start the typing
     
     for i, char in enumerate(query):
@@ -579,7 +579,6 @@ def human_typing(element, query):
             sleep(random.uniform(0.1, 0.3))
             
     return
-
 
 def save_to_csv(query, titles, urls):
     """
@@ -658,28 +657,24 @@ def main(args_list, start_index=0):
 
         payload = buid_qbp_payload(proxy_payload)
 
-        #S tarting profile
+        #Starting profile
         driver, qbp_id = start_qbp(payload)
 
         #Selenium automation will start from here
         driver.maximize_window() # It can be else maximized via Selenium or added as a cmd_param.
 
-        title = driver.title # Will return Multilogin's website title, as a default Start URL. It could be Google, but I prefered to do it using a function.
-        logging.info(f"Title: {title}")
-
         browser_to_google(driver)
-
         search_box = find_google_search(driver)
-        
         search_box.click()
         logging.info("Search box clicked.")
-        sleep(1)
+        sleep(3)
 
         human_typing(search_box, query)
-        sleep(2)
+        sleep(5)
 
         search_box.send_keys(Keys.ENTER)
-        sleep(3)
+        logging.info("Query sent")
+        sleep(5)
 
         if check_recaptcha(driver):
             logging.warning("reCAPTCHA was still detected and it was not resolved, we need to restart the script. Retrying...")
@@ -696,6 +691,7 @@ def main(args_list, start_index=0):
         sleep(1)
         logging.info(f"Number of titles: {len(titles)}")
         logging.info(f"Number of urls: {len(urls)}")
+
         sleep(2)
 
         save_to_csv(query, titles, urls)
