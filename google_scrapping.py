@@ -254,11 +254,11 @@ def check_proxy(proxy_payload):
     try:
         logging.info("Checking the proxy...")
 
-        r = requests.post(f'{MLX_LAUNCHER}v1/proxy/validate', headers=HEADERS, json=proxy_payload, timeout=10)
+        r = requests.post(f'{MLX_LAUNCHER}v1/proxy/validate', headers=HEADERS, json=proxy_payload, timeout=15)
     
     except requests.RequestException as e:
         logging.error(f"Error validating proxy - exception: {e}")
-        return proxy_payload
+        check_proxy(proxy_payload)
     
     if r.status_code == 200:
         logging.debug(f"{proxy_payload}")
@@ -313,7 +313,7 @@ def buid_qbp_payload(proxy_payload):
                 "password": proxy_payload["password"]
             },
             "custom_start_urls": [
-                            "https://www.multilogin.com",
+                            "https://www.multilogin.com", #it works only for Stealthfox, that's why it's imporant to use driver.get('url') to navigate to websites.
 
                 ],
             "fingerprint": {},
@@ -411,7 +411,7 @@ def stop_profile(qbp_id) -> None:
 
 def browser_to_google(driver):
     """
-    It browsers to google.com, and wait the Google's logo or Doodle to fully load and be clickable. 
+    It browsers to google.com, and wait the Google's logo or Doodle to fully load and be clickable.
 
     Args:
         driver: selenium web driver
@@ -453,9 +453,9 @@ def find_google_search(driver):
     return search_box
 
 
-def check_captcha(driver):
+def check_recaptcha(driver):
     """
-    Check if Google is requesting a captcha to be solved.
+    Check if Google is requesting a captcha to be solved. It tries to identify captcha elements, to ensure it's detected before continue or stop the script.
 
     Args:
         driver: selenium webdriver.
@@ -464,54 +464,46 @@ def check_captcha(driver):
     """
 
     logging.info("Checking captcha. Please, wait...")
-    wait = WebDriverWait(driver, 10)
+    sleep(1)
+    wait = WebDriverWait(driver, 20) #Provides up to 20 seconds to allow the automation to identify captcha elements.
 
     try:
-        captcha_form = wait.until(EC.visibility_of_element_located((By.ID, "captcha-form")))
+        captcha_iframe = wait.until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@title, 'reCAPTCHA')]")))
 
-        try:
-            logging.info("Testing new captcha view")
-            square_captcha = wait.until(EC.element_to_be_clickable(By.ID, "recaptcha-anchor"))
+        driver.switch_to.frame(captcha_iframe)
+        logging.debug("Inside reCAPTCHA Iframe")
 
-            if square_captcha:
-                logging.warning(f"Square captcha has been identified:{square_captcha}")
-                return True
-            
-            else:
-                logging.info("Captcha Square not found. Continuing...")
-            
-        except TimeoutException:
-            logging.info("No captcha detected. Proceeding with script")
-            return False
-
-        #change it to "wait until element is cliclabke"
+        recaptcha_checkbox = wait.until(EC.element_to_be_clickable((By.ID, "recaptcha-anchor")))
         logging.warning("Captcha detected. Manual action might be required. 30 second to complete the captcha, after that, the page will be refreshed.")
 
         sleep(30) #Providing time to allow the captcha be solved.
 
         try:
-            captcha_form = wait.until(EC.visibility_of_element_located((By.ID, "captcha-form")))
+            recaptcha_checkbox = wait.until(EC.element_to_be_clickable((By.ID, "recaptcha-anchor")))
             logging.warning("Captcha is still present. Refreshing the page and checking.")
             driver.refresh()
-            sleep(10)
+            sleep(15)
             return True
 
         except TimeoutException:
-            logging.info("Captcha has been resolved successfully. Continuing script")
+            logging.info("The reCAPTCHA element could not be find. Continuing the script...")
             return False
     
     except TimeoutException:
-            logging.info("No captcha detected. Proceeding with script")
+            logging.info("The reCAPTCHA element could not be find. Continuing the script.")
             return False
     
     except Exception as e: 
-        logging.error(f"Unexpected error while localizating captcha element: {e}")
+        logging.error(f"Unexpected error while locating captcha element: {e}")
         return False
+    
+    finally:
+        driver.switch_to.default_content()
 
 
 def find_elements(driver):
     """
-    It localizate elements from the query made on Google. Retriving "search titles" and "urls"
+    It locates elements from the query made on Google. Retriving "search titles" and "urls"
 
     Args:
         driver: selenium webdriver
@@ -552,7 +544,6 @@ def find_elements(driver):
 
 
 def human_typing(element, query):
-
     """
     It emulates a human typing, with random delays for each characters, also using differnt delays after punctuation symbols, and after spaces.
 
@@ -575,7 +566,6 @@ def human_typing(element, query):
         element.send_keys(char)
 
         #introducting long pauses between words
-
         if char in ".,?!;":
             sleep(random.uniform(0.3,0.6)) #after 
 
@@ -599,10 +589,8 @@ def save_to_csv(query, titles, urls):
         query: string
         titles: list
         urls: list
-    
-    Returns:
-
     """
+    
     file_path = "google_search.csv"
     write_header = not os.path.exists(file_path)
 
@@ -691,12 +679,18 @@ def main(args_list, start_index=0):
         sleep(2)
 
         search_box.send_keys(Keys.ENTER)
+        sleep(3)
 
-        if check_captcha(driver):
-            logging.warning("Captcha was detected and it was not resolved, we need to restart the script. Retrying...")
+        if check_recaptcha(driver):
+            logging.warning("reCAPTCHA was still detected and it was not resolved, we need to restart the script. Retrying...")
+            sleep(1)
 
             stop_profile(qbp_id)
             return main(args_list, i)
+        
+        else:
+            logging.info("No captcha has been found. Continuing.")
+            pass
         
         titles, urls = find_elements(driver)
         sleep(1)
@@ -711,7 +705,6 @@ def main(args_list, start_index=0):
     sleep(1)
     query_word = "query" if len(args_list) == 1 else "queries"
     logging.info(f"The search on Google for {len(args_list)} {query_word} has been finished. Please, check the CSV file.")
-    
 
 
 # * ____________________ STARTS HERE ____________________ * #
@@ -729,7 +722,6 @@ if __name__ == "__main__":
         
     else:
         HEADERS.update({'Authorization': f'Bearer {TOKEN}'})
-
 
     logging.debug(f"Checking HEADERS: {HEADERS}")
 
